@@ -70,16 +70,16 @@ func main() {
 	// could not be optimal.
 	cm := glink.New(serviceAddress, 5*time.Minute, 3, true)
 
-	// Get a connection from the ConnectionManager
+	// Get a connection from the ConnectionManager. The connection will be updated 
+	// automatically after 5*time.Minute, or if connection throws DeadlineExceeded 
+	// or Unavailable.
 	conn, err := cm.GetConnection()
 	if err != nil {
 		log.Fatalf("Error establishing connection: %v", err)
 	}
 	defer cm.Close()
 
-	// Build a new object in each request. The connection will be updated 
-	// automatically after 5*time.Minute, or if connection throws DeadlineExceeded 
-	// or Unavailable.
+	// Build a new object pb.NewProtocolClient in each request with conn object.
 	// This will add near zero overhead, but will guaranteed you connection is in shape.
 	yourclient := pb.NewProtocolClient(conn)
 	yourclient.GetData1()
